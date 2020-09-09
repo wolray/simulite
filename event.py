@@ -18,18 +18,22 @@ class Event:
         self.action(self.time)
 
     def with_before(self, action: Action):
-        def new_action(t):
-            action(t)
-            self.action(t)
+        old = self.action
 
-        self.action = new_action
+        def new(t):
+            action(t)
+            old(t)
+
+        self.action = new
 
     def with_after(self, action: Action):
-        def new_action(t):
-            self.action(t)
+        old = self.action
+
+        def new(t):
+            old(t)
             action(t)
 
-        self.action = new_action
+        self.action = new
 
     def __lt__(self, other):
         if self.time < other.time:
@@ -89,7 +93,7 @@ class EventBus:
         """
         :return: time span between the first and the last events
         """
-        return self.end - self.beg if self.end and self.beg else None
+        return self.end - self.beg if self.end else None
 
     def __bool__(self):
         return not self.pq.empty()
