@@ -1,6 +1,6 @@
 import abc
 
-from event import *
+from simulite.event import *
 
 
 class AbsRouter(Action):

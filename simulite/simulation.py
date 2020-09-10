@@ -2,7 +2,7 @@ import logging
 import time
 from typing import List
 
-from router import *
+from simulite.router import *
 
 
 class Simulation:

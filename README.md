@@ -1,2 +1,2 @@
-# Simulite
-A simple event-based simulator
+# SimuLite
+A simple and flexible event-based simulator.

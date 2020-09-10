@@ -1,4 +1,4 @@
-from simulation import *
+from simulite.simulation import *
 
 
 def f(name: str):
@@ -8,7 +8,7 @@ def f(name: str):
     return ff
 
 
-class ExampleStarter(Starter):
+class TestStarter(Starter):
     def __init__(self):
         super().__init__()
         self.period = timedelta(hours=1)
@@ -36,6 +36,6 @@ class ExampleStarter(Starter):
 
 if __name__ == '__main__':
     sim = Simulation()
-    sim.add_starter(ExampleStarter())
+    sim.add_starter(TestStarter())
     sim.run(datetime.now(), 1)
     print(f'total duration is {sim.duration}')
