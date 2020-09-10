@@ -82,7 +82,7 @@ class EventBus:
             event.trigger()
             yield
         self.close()
-        
+
     def close(self):
         self.end = self.now
 
