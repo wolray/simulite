@@ -26,7 +26,7 @@ class AbsRouter(Action):
 class Starter(AbsRouter):
     def __init__(self):
         super(Starter, self).__init__()
-        self.start_time: [datetime] = None
+        self.start_time: Optional[datetime] = None
         self.period: Optional[timedelta] = None
         self.delayed = False
 
