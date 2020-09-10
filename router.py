@@ -12,13 +12,14 @@ class AbsRouter(Action):
     def __call__(self, t: datetime):
         pass
 
-    def push(self, t: datetime, action: Action):
-        self.push_event(self.event(t, action))
+    def push(self, t: datetime, action: Action) -> Event:
+        return self.push_event(self.event(t, action))
 
-    def push_event(self, event: Event):
+    def push_event(self, event: Event) -> Event:
         self.event_bus.push(event)
+        return event
 
-    def event(self, t: datetime, action: Action):
+    def event(self, t: datetime, action: Action) -> Event:
         return Event(t, self.priority, action)
 
 
