@@ -73,27 +73,21 @@ class EventBus:
         """
         self.pq.put(event)
 
-    def pop(self) -> bool:
-        """
-        pop an event from the queue
-        :return: if pop succeeded (not emtpy before pop)
-        """
-        if self:
+    def run(self):
+        while not self.pq.empty():
             event = self.pq.get()
             if self.beg is None:
                 self.beg = event.time
             self.now = event.time
             event.trigger()
-            return True
-        else:
-            self.end = self.now
-            return False
+            yield
+        self.close()
+        
+    def close(self):
+        self.end = self.now
 
     def time_span(self) -> Optional[timedelta]:
         """
         :return: time span between the first and the last events
         """
         return self.end - self.beg if self.end else None
-
-    def __bool__(self):
-        return not self.pq.empty()
