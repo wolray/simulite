@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from queue import PriorityQueue
-from typing import Callable, Optional
+from typing import Callable, Optional, Dict
 
 Action = Callable[[datetime], None]
 
@@ -8,78 +8,61 @@ Action = Callable[[datetime], None]
 class Event:
     def __init__(self, time: datetime, priority: int, action: Action):
         self.time = time
-        self.priority = priority
+        self.key = (time, priority)
         self.action = action
 
-    def trigger(self):
-        """
-        trigger the event by running the action
-        """
-        self.action(self.time)
-
-    def with_before(self, action: Action):
-        old = self.action
-
+    @staticmethod
+    def merge(a: Action, b: Action):
         def new(t):
-            action(t)
-            old(t)
+            a(t)
+            b(t)
 
-        self.action = new
+        return new
 
-    def with_after(self, action: Action):
-        old = self.action
+    def prepend(self, action: Action):
+        self.action = Event.merge(action, self.action)
 
-        def new(t):
-            old(t)
-            action(t)
-
-        self.action = new
-
-    def __lt__(self, other):
-        if self.time < other.time:
-            return True
-        return self.time == other.time and self.priority < other.priority
-
-    def __le__(self, other):
-        if self.time < other.time:
-            return True
-        return self.time == other.time and self.priority <= other.priority
-
-    def __eq__(self, other):
-        return self.time == other.time and self.priority == other.priority
-
-    def __gt__(self, other):
-        if self.time > other.time:
-            return True
-        return self.time == other.time and self.priority > other.priority
-
-    def __ge__(self, other):
-        if self.time > other.time:
-            return True
-        return self.time == other.time and self.priority >= other.priority
+    def append(self, action: Action):
+        self.action = Event.merge(self.action, action)
 
 
 class EventBus:
     def __init__(self):
         self.pq = PriorityQueue()
+        self.map: Dict[tuple, Event] = {}
         self.beg: Optional[datetime] = None
         self.now: Optional[datetime] = None
         self.end: Optional[datetime] = None
 
     def push(self, event: Event):
         """
-        push an event onto the queue
+        push an event into the queue
+        merge if the key is duplicated
         :param event: event to push
+        :return: event if not merged else the old one
         """
-        self.pq.put(event)
+        key = event.key
+        old = self.map.get(key)
+        if old:
+            old.append(event.action)
+            return old
+        else:
+            self.pq.put(key)
+            self.map[key] = event
+            return event
+
+    def pop(self) -> Event:
+        key = self.pq.get()
+        return self.map.pop(key)
 
     def run(self):
         while not self.pq.empty():
-            event = self.pq.get()
+            event = self.pop()
+            t = event.time
             if self.beg is None:
-                self.beg = event.time
-            self.now = event.time
-            event.trigger()
+                self.beg = t
+            self.now = t
+            event.action(t)
             yield
         self.close()
 

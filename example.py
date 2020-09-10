@@ -1,12 +1,11 @@
 from simulation import *
 
 
-def f1(t):
-    print(f'using f1 at {t}')
+def f(name: str):
+    def ff(t):
+        print(f'{name} at {t}')
 
-
-def f2(t):
-    print(f'using f2 at {t}')
+    return ff
 
 
 class ExampleStarter(Starter):
@@ -17,10 +16,11 @@ class ExampleStarter(Starter):
 
     def before(self):
         t = datetime.now()
-        self.push(t, f1)
-        self.push(t + timedelta(seconds=10), f1)
-        self.push(t + timedelta(seconds=10), f2)
-        self.push(t + timedelta(seconds=25), f1).with_after(f2)
+        self.push(t, f('a'))
+        self.push(t + timedelta(seconds=10), f('b'))
+        self.push(t + timedelta(seconds=10), f('c'))
+        self.push(t + timedelta(seconds=20), f('d')).append(f('e'))
+        self.push(t + timedelta(seconds=30), f('f')).prepend(f('g'))
 
     def act(self, t: datetime):
         print(f'repeating at {t}')
