@@ -23,6 +23,8 @@ class ExampleStarter(Starter):
         self.push(t + timedelta(seconds=30), f('f')).prepend(f('g'))
 
     def act(self, t: datetime):
+        import time
+        time.sleep(0.5)
         print(f'repeating at {t}')
 
     def after(self):
@@ -35,5 +37,5 @@ class ExampleStarter(Starter):
 if __name__ == '__main__':
     sim = Simulation()
     sim.add_starter(ExampleStarter())
-    sim.run(datetime.now())
+    sim.run(datetime.now(), 1)
     print(f'total duration is {sim.duration}')

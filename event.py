@@ -36,10 +36,10 @@ class EventBus:
 
     def push(self, event: Event):
         """
-        push an event into the queue
+        push an event onto the queue
         merge if the key is duplicated
         :param event: event to push
-        :return: event if not merged else the old one
+        :return: pushed event if not merged else the old one
         """
         key = event.key
         old = self.map.get(key)
