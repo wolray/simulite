@@ -18,9 +18,9 @@ class ExampleStarter(Starter):
     def before(self):
         t = datetime.now()
         self.push(t, f1)
-        self.push(t + timedelta(seconds=10), f2)
         self.push(t + timedelta(seconds=10), f1)
-        self.push(t + timedelta(seconds=25), f1)
+        self.push(t + timedelta(seconds=10), f2)
+        self.push(t + timedelta(seconds=25), f1).with_after(f2)
 
     def act(self, t: datetime):
         print(f'repeating at {t}')
