@@ -23,9 +23,10 @@ class Simulation:
             st = starter.start_time or start_time
             if st is not None:
                 starter.push(st, starter)
-        while self.event_bus.pop():
+        for _ in self.event_bus.run():
             if 0 < max_seconds < time.time() - tic:
                 logging.warning(f'timeout limit ({max_seconds}s) exceeded')
+                self.event_bus.close()
                 break
         for starter in self.starters:
             starter.after()
