@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='simulite',
-    version='1.0.1',
+    version='1.1.0',
     author='wolray',
     author_email='wolray@foxmail.com',
     description='A simple and flexible event-based simulator',

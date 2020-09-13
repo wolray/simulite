@@ -1,41 +1,35 @@
-from simulite.simulation import *
+from simulite.env import *
 
 
-def f(name: str):
-    def ff(t):
+def f(name: str) -> Action:
+    def _f(t):
         print(f'{name} at {t}')
 
-    return ff
+    return _f
 
 
-class TestStarter(Starter):
-    def __init__(self):
-        super().__init__()
-        self.period = timedelta(hours=1)
-        self.delayed = False
+def terminate(t: datetime):
+    return t.day > datetime.now().day
 
-    def before(self):
-        t = datetime.now()
-        self.push(t, f('a'))
-        self.push(t + timedelta(seconds=10), f('b'))
-        self.push(t + timedelta(seconds=10), f('c'))
-        self.push(t + timedelta(seconds=20), f('d')).append(f('e'))
-        self.push(t + timedelta(seconds=30), f('f')).prepend(f('g'))
 
-    def act(self, t: datetime):
-        import time
-        time.sleep(0.5)
-        print(f'repeating at {t}')
+def starter(env: Env):
+    t = datetime.now()
+    env.push(t, f('a'))
+    env.repeat(t, timedelta(hours=1), f('repeat'), terminate)
+    env.push(t + timedelta(seconds=10), f('b'))
+    env.push(t + timedelta(seconds=10), f('c'))
+    env.push(t + timedelta(seconds=20), f('d')).append(f('e'))
+    env.push(t + timedelta(seconds=30), f('f')).prepend(f('g'))
 
-    def after(self):
-        print(f'simulation time_span is {self.event_bus.time_span()}')
 
-    def allow_repeat(self, t: datetime) -> bool:
-        return t.date().day <= datetime.now().day
+def ender(env: Env):
+    print(f'simulation time_span is {env.time_span()}')
 
 
 if __name__ == '__main__':
-    sim = Simulation()
-    sim.add_starter(TestStarter())
-    sim.run(datetime.now(), 1)
-    print(f'total duration is {sim.duration}')
+    env = Env()
+    env.add_starter(starter)
+    env.run()
+    ender(env)
+
+    print(f'total duration is {env.duration}')
