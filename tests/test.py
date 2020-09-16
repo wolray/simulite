@@ -12,7 +12,7 @@ def terminate(t: datetime):
     return t.day > datetime.now().day
 
 
-def starter(env: Env):
+def starter(env: Environment):
     t = datetime.now()
     env.push(t, f('a'))
     env.repeat(t, timedelta(hours=1), f('repeat'), terminate)
@@ -22,12 +22,12 @@ def starter(env: Env):
     env.push(t + timedelta(seconds=30), f('f')).prepend(f('g'))
 
 
-def ender(env: Env):
+def ender(env: Environment):
     print(f'simulation time_span is {env.time_span()}')
 
 
 if __name__ == '__main__':
-    env = Env()
+    env = Environment()
     env.add_starter(starter)
     env.run()
     ender(env)

@@ -5,3 +5,4 @@ A simple and flexible event-based simulator.
 ```
 pip install simulite 
 ```
+see [test.py](tests/test.py)

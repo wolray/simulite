@@ -29,7 +29,7 @@ class Event:
         return self
 
 
-class Env:
+class Environment:
     def __init__(self):
         self.starters: List[Starter] = []
         self.pq = PriorityQueue()
@@ -90,16 +90,16 @@ class Env:
         """
         return self.end - self.beg if self.end else None
 
-    def repeat(self, start_time: datetime, period: timedelta, action: Action, terminator: Terminator):
+    def repeat(self, start: datetime, period: timedelta, action: Action, terminator: Terminator):
         def _repeat(t):
             if not terminator(t):
                 action(t)
                 self.repeat(t + period, period, action, terminator)
 
-        self.push(start_time, _repeat)
+        self.push(start, _repeat)
         return self
 
 
 Action = Callable[[datetime], None]
-Starter = Callable[[Env], None]
+Starter = Callable[[Environment], None]
 Terminator = Callable[[datetime], bool]
