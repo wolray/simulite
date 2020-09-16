@@ -55,7 +55,7 @@ class Environment:
         key = event.key
         old = self.map.get(key)
         if old:
-            old.append(event.action)
+            old.append(action)
             return old
         else:
             self.pq.put(key)

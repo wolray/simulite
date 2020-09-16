@@ -1,4 +1,4 @@
-from simulite.env import *
+from simulite import *
 
 
 def f(name: str) -> Action:
