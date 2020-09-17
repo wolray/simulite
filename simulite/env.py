@@ -36,8 +36,7 @@ class Environment:
         self.map: Dict[tuple, Event] = {}
         self.beg: Optional[datetime] = None
         self.now: Optional[datetime] = None
-        self.end: Optional[datetime] = None
-        self.duration: Optional[int] = None
+        self.cost_seconds: Optional[int] = None
 
     def add_starter(self, starter: Starter):
         self.starters.append(starter)
@@ -80,15 +79,13 @@ class Environment:
                 import logging
                 logging.warning(f'simulation timeout over {max_seconds}s')
                 break
-        self.end = self.now
-
-        self.duration = timer.time() - tic
+        self.cost_seconds = timer.time() - tic
 
     def time_span(self) -> Optional[timedelta]:
         """
         :return: time span between the first and the last events
         """
-        return self.end - self.beg if self.end else None
+        return self.now - self.beg
 
     def repeat(self, start: datetime, period: timedelta, action: Action, terminator: Terminator):
         def _repeat(t):

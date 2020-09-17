@@ -32,4 +32,4 @@ if __name__ == '__main__':
     env.run()
     ender(env)
 
-    print(f'total duration is {env.duration}')
+    print(f'total cost_seconds is {env.cost_seconds}')
